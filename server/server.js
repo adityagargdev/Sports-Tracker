@@ -8,6 +8,8 @@ const app = express();
 
 app.use(cors({
   origin: ['http://localhost:3000', 'https://sports-tracker-sigma.vercel.app'],
+  credentials:true
+}));
 app.use(express.json());
 app.use(cookieParser());
 
