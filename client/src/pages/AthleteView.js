@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
@@ -17,7 +17,7 @@ const AthleteView = () => {
   const [msgType, setMsgType] = useState('success');
   const [submittingGoal, setSubmittingGoal] = useState(false);
 
-  const fetchSessions = async () => {
+  const fetchSessions = useCallback(async () => {
     try {
       const res = await axios.get(`/coach/athletes/${athleteId}/sessions`);
       setSessions(res.data.sessions);
@@ -26,9 +26,9 @@ const AthleteView = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [athleteId]);
 
-  useEffect(() => { fetchSessions(); }, [athleteId]);
+  useEffect(() => { fetchSessions(); }, [fetchSessions]);
 
   const showMsg = (text, type = 'success') => {
     setMessage(text);
