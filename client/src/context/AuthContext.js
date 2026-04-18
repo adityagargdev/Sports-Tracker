@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
 
-axios.defaults.baseURL = 'https://sports-tracker-api-1rn8.onrender.com';
+axios.defaults.baseURL = 'https://sports-tracker-api-1rn8.onrender.com/api';
 axios.defaults.withCredentials = true;
 
 const AuthContext = createContext();
