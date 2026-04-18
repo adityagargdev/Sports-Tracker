@@ -2,16 +2,19 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
+const passport = require('passport');
 require('dotenv').config();
+require('./config/passport');
 
 const app = express();
 
 app.use(cors({
   origin: ['http://localhost:3000', 'https://sports-tracker-sigma.vercel.app'],
-  credentials:true
+  credentials: true
 }));
 app.use(express.json());
 app.use(cookieParser());
+app.use(passport.initialize());
 
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/workouts', require('./routes/workoutRoutes'));

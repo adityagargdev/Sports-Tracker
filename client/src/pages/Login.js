@@ -46,6 +46,22 @@ const Login = () => {
         </button>
       </form>
       <p>Don't have an account? <Link to="/register">Register</Link></p>
+      <div style={{ textAlign: 'center', margin: '1rem 0' }}>
+        <span style={{ color: '#888' }}>or</span>
+      </div>
+      
+        <a href="https://sports-tracker-api-1rn8.onrender.com/api/auth/google"
+        style={{
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          gap: '0.5rem', width: '100%', padding: '0.6rem',
+          border: '1px solid #ddd', borderRadius: '6px',
+          textDecoration: 'none', color: '#333', background: 'white',
+          fontWeight: '500', cursor: 'pointer', boxSizing: 'border-box'
+        }}
+      >
+        <img src="https://www.google.com/favicon.ico" width="18" height="18" alt="Google" />
+        Sign in with Google
+      </a>
     </div>
   );
 };

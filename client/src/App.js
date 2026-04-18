@@ -10,6 +10,7 @@ import WorkoutTypes from './pages/WorkoutTypes';
 import CoachDashboard from './pages/CoachDashboard';
 import AthleteView from './pages/AthleteView';
 import LinkCoach from './pages/LinkCoach';
+import AuthCallback from './pages/AuthCallback';
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
           <Route path="/coach" element={<ProtectedRoute><CoachDashboard /></ProtectedRoute>} />
           <Route path="/coach/athlete/:athleteId" element={<ProtectedRoute><AthleteView /></ProtectedRoute>} />
           <Route path="/link-coach" element={<ProtectedRoute><LinkCoach /></ProtectedRoute>} />
+          <Route path="/auth/callback" element={<AuthCallback />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>

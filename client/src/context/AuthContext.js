@@ -43,13 +43,18 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = async () => {
+    const handleGoogleCallback = (token) => {
+    localStorage.setItem('token', token);
+    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    axios.get('/auth/me').then(res => setUser(res.data.user));
+    };
     localStorage.removeItem('token');
     delete axios.defaults.headers.common['Authorization'];
     setUser(null);
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, logout }}>
+    <AuthContext.Provider value={{ user, loading, login, register, logout, handleGoogleCallback }}> 
       {children}
     </AuthContext.Provider>
   );

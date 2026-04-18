@@ -15,9 +15,12 @@ const userSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: [true, 'Password is required'],
     minlength: 6,
     select: false
+  },
+  googleId: {
+    type: String,
+    sparse: true
   },
   role: {
     type: String,
@@ -41,12 +44,12 @@ const userSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 userSchema.pre('save', async function() {
-  if (!this.isModified('password')) return;
-  this.password = bcrypt.hashSync(this.password, 12);
+  if (!this.isModified('password') || !this.password) return;
+  this.password = require('bcryptjs').hashSync(this.password, 12);
 });
 
 userSchema.methods.comparePassword = function(candidatePassword) {
-  return bcrypt.compareSync(candidatePassword, this.password);
+  return require('bcryptjs').compareSync(candidatePassword, this.password);
 };
 
 module.exports = mongoose.model('User', userSchema);
