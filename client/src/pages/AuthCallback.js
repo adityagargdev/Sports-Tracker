@@ -15,7 +15,7 @@ const AuthCallback = () => {
     } else {
       navigate('/login');
     }
-  }, []);
+  }, [handleGoogleCallback, navigate]); // ✅ added missing dependencies
 
   return <div style={{ padding: '2rem', textAlign: 'center' }}>Signing you in...</div>;
 };
