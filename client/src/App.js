@@ -11,6 +11,7 @@ import CoachDashboard from './pages/CoachDashboard';
 import AthleteView from './pages/AthleteView';
 import LinkCoach from './pages/LinkCoach';
 import AuthCallback from './pages/AuthCallback';
+import SelectRole from './pages/SelectRole'; // ✅ new
 
 function App() {
   return (
@@ -20,6 +21,8 @@ function App() {
           <Route path="/" element={<Navigate to="/login" />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/auth/callback" element={<AuthCallback />} />
+          <Route path="/select-role" element={<SelectRole />} /> {/* ✅ new */}
           <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
           <Route path="/log-session" element={<ProtectedRoute><LogSession /></ProtectedRoute>} />
           <Route path="/goals" element={<ProtectedRoute><Goals /></ProtectedRoute>} />
@@ -27,7 +30,6 @@ function App() {
           <Route path="/coach" element={<ProtectedRoute><CoachDashboard /></ProtectedRoute>} />
           <Route path="/coach/athlete/:athleteId" element={<ProtectedRoute><AthleteView /></ProtectedRoute>} />
           <Route path="/link-coach" element={<ProtectedRoute><LinkCoach /></ProtectedRoute>} />
-          <Route path="/auth/callback" element={<AuthCallback />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>

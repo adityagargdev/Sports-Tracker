@@ -10,6 +10,27 @@ router.post('/login', login);
 router.post('/logout', logout);
 router.get('/me', protect, getMe);
 
+// ✅ New: set role after Google login
+router.post('/set-role', protect, async (req, res) => {
+  try {
+    const { role } = req.body;
+    if (!['athlete', 'coach'].includes(role)) {
+      return res.status(400).json({ message: 'Invalid role' });
+    }
+    req.user.role = role;
+
+    // generate coachCode if coach
+    if (role === 'coach' && !req.user.coachCode) {
+      req.user.coachCode = Math.random().toString(36).substring(2, 8).toUpperCase();
+    }
+
+    await req.user.save();
+    res.json({ user: req.user });
+  } catch (err) {
+    res.status(500).json({ message: 'Failed to set role' });
+  }
+});
+
 // Google OAuth
 router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'], session: false }));
 

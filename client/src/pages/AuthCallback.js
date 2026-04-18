@@ -10,12 +10,18 @@ const AuthCallback = () => {
     const params = new URLSearchParams(window.location.search);
     const token = params.get('token');
     if (token) {
-      handleGoogleCallback(token);
-      navigate('/dashboard');
+      handleGoogleCallback(token).then(role => {
+        // ✅ new user with no role → pick role first
+        if (!role) {
+          navigate('/select-role');
+        } else {
+          navigate('/dashboard');
+        }
+      });
     } else {
       navigate('/login');
     }
-  }, [handleGoogleCallback, navigate]); // ✅ added missing dependencies
+  }, [handleGoogleCallback, navigate]);
 
   return <div style={{ padding: '2rem', textAlign: 'center' }}>Signing you in...</div>;
 };

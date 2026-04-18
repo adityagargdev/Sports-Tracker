@@ -48,15 +48,22 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
-  // ✅ Moved OUT of logout — now a proper top-level function
-  const handleGoogleCallback = (token) => {
+  const handleGoogleCallback = async (token) => {
     localStorage.setItem('token', token);
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-    axios.get('/auth/me').then(res => setUser(res.data.user));
+    const res = await axios.get('/auth/me');
+    setUser(res.data.user);
+    // ✅ return role so AuthCallback can decide where to navigate
+    return res.data.user.role;
+  };
+
+  const setRole = async (role) => {
+    const res = await axios.post('/auth/set-role', { role });
+    setUser(res.data.user);
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, logout, handleGoogleCallback }}>
+    <AuthContext.Provider value={{ user, loading, login, register, logout, handleGoogleCallback, setRole }}>
       {children}
     </AuthContext.Provider>
   );

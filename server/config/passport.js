@@ -16,11 +16,12 @@ passport.use(new GoogleStrategy({
         user.googleId = profile.id;
         await user.save();
       } else {
+        // ✅ no role set — they'll pick it on /select-role
         user = await User.create({
           name: profile.displayName,
           email: profile.emails[0].value,
           googleId: profile.id,
-          role: 'athlete',
+          role: null,
           password: Math.random().toString(36).slice(-8),
         });
       }
