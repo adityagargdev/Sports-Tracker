@@ -2,7 +2,6 @@ import { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
 
 axios.defaults.baseURL = 'https://sports-tracker-api-1rn8.onrender.com/api';
-axios.defaults.withCredentials = true;
 
 const AuthContext = createContext();
 
@@ -11,24 +10,41 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axios.get('/auth/me')
-      .then(res => setUser(res.data.user))
-      .catch(() => setUser(null))
-      .finally(() => setLoading(false));
+    const token = localStorage.getItem('token');
+    if (token) {
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      axios.get('/auth/me')
+        .then(res => setUser(res.data.user))
+        .catch(() => {
+          localStorage.removeItem('token');
+          delete axios.defaults.headers.common['Authorization'];
+          setUser(null);
+        })
+        .finally(() => setLoading(false));
+    } else {
+      setLoading(false);
+    }
   }, []);
 
   const login = async (email, password) => {
     const res = await axios.post('/auth/login', { email, password });
+    const token = res.data.token;
+    localStorage.setItem('token', token);
+    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     setUser(res.data.user);
   };
 
   const register = async (name, email, password, role) => {
     const res = await axios.post('/auth/register', { name, email, password, role });
+    const token = res.data.token;
+    localStorage.setItem('token', token);
+    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     setUser(res.data.user);
   };
 
   const logout = async () => {
-    await axios.post('/auth/logout');
+    localStorage.removeItem('token');
+    delete axios.defaults.headers.common['Authorization'];
     setUser(null);
   };
 

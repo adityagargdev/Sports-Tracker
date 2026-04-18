@@ -31,15 +31,16 @@ exports.register = async (req, res) => {
     const token = signToken(user._id);
     sendTokenCookie(res, token);
 
-    return res.status(201).json({
-      status: 'success',
-      user: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-        role: user.role
-      }
-    });
+   return res.status(201).json({
+  status: 'success',
+  token,
+  user: {
+    id: user._id,
+    name: user.name,
+    email: user.email,
+    role: user.role
+  }
+});
   } catch (err) {
     return res.status(500).json({ message: err.message });
   }
@@ -57,14 +58,15 @@ exports.login = async (req, res) => {
     sendTokenCookie(res, token);
 
     return res.status(200).json({
-      status: 'success',
-      user: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-        role: user.role
-      }
-    });
+  status: 'success',
+  token,
+  user: {
+    id: user._id,
+    name: user.name,
+    email: user.email,
+    role: user.role
+  }
+});
   } catch (err) {
     return res.status(500).json({ message: err.message });
   }
