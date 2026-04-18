@@ -42,19 +42,21 @@ export const AuthProvider = ({ children }) => {
     setUser(res.data.user);
   };
 
-  const logout = async () => {
-    const handleGoogleCallback = (token) => {
-    localStorage.setItem('token', token);
-    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-    axios.get('/auth/me').then(res => setUser(res.data.user));
-    };
+  const logout = () => {
     localStorage.removeItem('token');
     delete axios.defaults.headers.common['Authorization'];
     setUser(null);
   };
 
+  // ✅ Moved OUT of logout — now a proper top-level function
+  const handleGoogleCallback = (token) => {
+    localStorage.setItem('token', token);
+    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    axios.get('/auth/me').then(res => setUser(res.data.user));
+  };
+
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, logout, handleGoogleCallback }}> 
+    <AuthContext.Provider value={{ user, loading, login, register, logout, handleGoogleCallback }}>
       {children}
     </AuthContext.Provider>
   );
