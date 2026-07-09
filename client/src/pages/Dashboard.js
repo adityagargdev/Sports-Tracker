@@ -6,6 +6,268 @@ import {
 } from 'recharts';
 import Navbar from '../components/Navbar';
 
+const css = `
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+
+  * { box-sizing: border-box; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .dash-root {
+    min-height: 100vh;
+    background: #0a0a0f;
+    font-family: 'Inter', sans-serif;
+    color: #fff;
+  }
+
+  .dash-body {
+    padding: 2rem 1.75rem 5rem;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  /* Header */
+  .dash-header {
+    margin-bottom: 2rem;
+    animation: fadeUp 0.4s ease both;
+  }
+
+  .dash-header h1 {
+    font-size: clamp(1.4rem, 3vw, 1.75rem);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    color: #fff;
+    margin: 0 0 0.25rem;
+    line-height: 1.2;
+  }
+
+  .dash-subtitle {
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.3);
+    margin: 0;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+  }
+
+  /* Stat grid */
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .stat-card {
+    background: #111118;
+    border-radius: 10px;
+    padding: 1.1rem 1.25rem;
+    border: 1px solid rgba(255,255,255,0.05);
+    animation: fadeUp 0.4s ease both;
+    transition: border-color 0.2s;
+  }
+
+  .stat-card:hover { border-color: rgba(255,255,255,0.1); }
+
+  .stat-card:nth-child(1) { animation-delay: 0.05s; }
+  .stat-card:nth-child(2) { animation-delay: 0.1s; }
+  .stat-card:nth-child(3) { animation-delay: 0.15s; }
+  .stat-card:nth-child(4) { animation-delay: 0.2s; }
+
+  .stat-label {
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: rgba(255,255,255,0.35);
+    letter-spacing: 0.01em;
+    margin-bottom: 0.6rem;
+  }
+
+  .stat-value {
+    font-size: 1.85rem;
+    font-weight: 600;
+    color: #fff;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    margin-bottom: 0.25rem;
+  }
+
+  .stat-unit {
+    font-size: 0.72rem;
+    color: rgba(255,255,255,0.25);
+    font-weight: 400;
+  }
+
+  .stat-accent {
+    display: inline-block;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: #818cf8;
+    margin-bottom: 0.7rem;
+  }
+
+  /* Panels */
+  .panel {
+    background: #111118;
+    border-radius: 10px;
+    padding: 1.25rem 1.5rem;
+    border: 1px solid rgba(255,255,255,0.05);
+    animation: fadeUp 0.4s ease both;
+  }
+
+  .panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.25rem;
+  }
+
+  .panel-title {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: rgba(255,255,255,0.8);
+    letter-spacing: -0.01em;
+  }
+
+  .panel-meta {
+    font-size: 0.7rem;
+    color: rgba(255,255,255,0.22);
+    font-weight: 400;
+  }
+
+  .chart-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .chart-grid .panel:nth-child(1) { animation-delay: 0.25s; }
+  .chart-grid .panel:nth-child(2) { animation-delay: 0.3s; }
+
+  /* Goals */
+  .goals-panel { margin-bottom: 1.25rem; animation-delay: 0.35s; }
+
+  .goal-item { margin-bottom: 1.1rem; }
+  .goal-item:last-child { margin-bottom: 0; }
+
+  .goal-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 0.35rem;
+  }
+
+  .goal-name {
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: rgba(255,255,255,0.8);
+    letter-spacing: -0.01em;
+  }
+
+  .goal-numbers {
+    font-size: 0.72rem;
+    color: rgba(255,255,255,0.28);
+    font-weight: 400;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .goal-track {
+    background: rgba(255,255,255,0.05);
+    border-radius: 999px;
+    height: 4px;
+    overflow: hidden;
+  }
+
+  .goal-fill {
+    height: 100%;
+    border-radius: 999px;
+    background: #818cf8;
+    transition: width 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+  }
+
+  .goal-fill.complete { background: #34d399; }
+
+  .goal-meta {
+    font-size: 0.68rem;
+    color: rgba(255,255,255,0.2);
+    margin-top: 0.3rem;
+    font-weight: 400;
+  }
+
+  /* Sessions table */
+  .sessions-panel { animation-delay: 0.4s; }
+
+  .sessions-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .sessions-table th {
+    text-align: left;
+    padding: 0 0.625rem 0.625rem;
+    font-size: 0.68rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: rgba(255,255,255,0.2);
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+
+  .sessions-table td {
+    padding: 0.75rem 0.625rem;
+    font-size: 0.82rem;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+    color: rgba(255,255,255,0.6);
+    vertical-align: middle;
+    letter-spacing: -0.01em;
+  }
+
+  .sessions-table tr:last-child td { border-bottom: none; }
+  .sessions-table tr:hover td { color: rgba(255,255,255,0.8); }
+
+  .workout-badge {
+    background: rgba(129,140,248,0.1);
+    color: rgba(129,140,248,0.9);
+    border: 1px solid rgba(129,140,248,0.18);
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.72rem;
+    font-weight: 500;
+    white-space: nowrap;
+    letter-spacing: -0.01em;
+  }
+
+  .date-cell { color: rgba(255,255,255,0.28); font-size: 0.78rem; white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .duration-cell { color: rgba(255,255,255,0.7); font-weight: 500; font-variant-numeric: tabular-nums; }
+  .cal-cell { color: rgba(255,255,255,0.5); font-variant-numeric: tabular-nums; }
+  .notes-cell { color: rgba(255,255,255,0.22); font-size: 0.78rem; max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  /* Empty */
+  .empty-state { text-align: center; padding: 2.5rem 0; }
+  .empty-state p { color: rgba(255,255,255,0.22); font-size: 0.82rem; margin: 0 0 0.875rem; }
+  .empty-link {
+    display: inline-block; color: #818cf8; text-decoration: none;
+    font-weight: 500; font-size: 0.8rem;
+    border: 1px solid rgba(129,140,248,0.25); padding: 0.45rem 1rem;
+    border-radius: 6px; transition: all 0.15s; letter-spacing: -0.01em;
+  }
+  .empty-link:hover { background: rgba(129,140,248,0.08); border-color: rgba(129,140,248,0.4); }
+
+  /* Responsive */
+  @media (max-width: 900px) {
+    .stat-grid { grid-template-columns: repeat(2, 1fr); }
+    .chart-grid { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 480px) {
+    .stat-grid { grid-template-columns: repeat(2, 1fr); }
+    .sessions-table th:nth-child(4), .sessions-table td:nth-child(4),
+    .sessions-table th:nth-child(5), .sessions-table td:nth-child(5) { display: none; }
+  }
+`;
+
 const Dashboard = () => {
   const [stats, setStats] = useState(null);
   const [sessions, setSessions] = useState([]);
@@ -39,452 +301,61 @@ const Dashboard = () => {
   }));
 
   const CustomTooltip = ({ active, payload, label }) => {
-    if (active && payload && payload.length) {
-      return (
-        <div style={{
-          background: '#1a1a24',
-          border: '1px solid rgba(255,107,53,0.25)',
-          borderRadius: 8,
-          padding: '0.6rem 0.9rem',
-          fontSize: '0.82rem',
-          color: '#fff',
-          boxShadow: '0 4px 20px rgba(0,0,0,0.5)'
-        }}>
-          <div style={{ color: 'rgba(255,255,255,0.5)', marginBottom: 4 }}>{label}</div>
-          {payload.map((p, i) => (
-            <div key={i} style={{ color: p.color, fontWeight: 600 }}>
-              {p.value} {p.name === 'duration' ? 'mins' : 'kcal'}
-            </div>
-          ))}
-        </div>
-      );
-    }
-    return null;
+    if (!active || !payload?.length) return null;
+    return (
+      <div style={{
+        background: '#1a1a24',
+        border: '1px solid rgba(255,255,255,0.08)',
+        borderRadius: 8,
+        padding: '0.6rem 0.875rem',
+        fontSize: '0.78rem',
+        fontFamily: 'Inter, sans-serif',
+        boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
+      }}>
+        <div style={{ color: 'rgba(255,255,255,0.35)', marginBottom: 4, fontSize: '0.7rem' }}>{label}</div>
+        {payload.map((p, i) => (
+          <div key={i} style={{ color: '#fff', fontWeight: 500 }}>
+            {p.value}{' '}
+            <span style={{ color: 'rgba(255,255,255,0.35)', fontWeight: 400 }}>
+              {p.name === 'duration' ? 'min' : 'kcal'}
+            </span>
+          </div>
+        ))}
+      </div>
+    );
   };
 
+  const activeGoals = goals.filter(g => g.status === 'active').length;
+
+  const statCards = [
+    { title: 'Sessions this week', value: stats?.totalSessions || 0, unit: 'sessions' },
+    { title: 'Total duration',     value: stats?.totalDuration  || 0, unit: 'min' },
+    { title: 'Calories burned',    value: stats?.totalCalories  || 0, unit: 'kcal' },
+    { title: 'Active goals',       value: activeGoals,                unit: 'goals' },
+  ];
+
   if (loading) return (
-    <div style={{ minHeight: '100vh', background: '#0f0f14' }}>
+    <div className="dash-root">
+      <style>{css}</style>
       <Navbar />
-      <div style={{
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        height: 'calc(100vh - 64px)', flexDirection: 'column', gap: '1rem'
-      }}>
-        <div style={{
-          width: 48, height: 48,
-          border: '3px solid rgba(255,107,53,0.15)',
-          borderTop: '3px solid #FF6B35',
-          borderRadius: '50%',
-          animation: 'spin 0.8s linear infinite'
-        }} />
-        <span style={{ color: 'rgba(255,255,255,0.4)', fontFamily: 'DM Sans, sans-serif', fontSize: '0.9rem' }}>
-          Loading your stats...
-        </span>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: 'calc(100vh - 56px)', gap: '0.75rem', flexDirection: 'column' }}>
+        <div style={{ width: 20, height: 20, border: '2px solid rgba(129,140,248,0.15)', borderTop: '2px solid #818cf8', borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} />
+        <span style={{ color: 'rgba(255,255,255,0.25)', fontFamily: 'Inter,sans-serif', fontSize: '0.8rem' }}>Loading…</span>
         <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
       </div>
     </div>
   );
 
-  const activeGoals = goals.filter(g => g.status === 'active').length;
-
-  const statCards = [
-    {
-      title: 'Sessions This Week',
-      value: stats?.totalSessions || 0,
-      unit: 'sessions',
-      icon: '🏋️',
-      color: '#2ECC71',
-      glow: 'rgba(46,204,113,0.2)',
-    },
-    {
-      title: 'Total Duration',
-      value: stats?.totalDuration || 0,
-      unit: 'mins',
-      icon: '⏱️',
-      color: '#00B4D8',
-      glow: 'rgba(0,180,216,0.2)',
-    },
-    {
-      title: 'Calories Burned',
-      value: stats?.totalCalories || 0,
-      unit: 'kcal',
-      icon: '🔥',
-      color: '#FF6B35',
-      glow: 'rgba(255,107,53,0.2)',
-    },
-    {
-      title: 'Active Goals',
-      value: activeGoals,
-      unit: 'goals',
-      icon: '🎯',
-      color: '#FFB627',
-      glow: 'rgba(255,182,39,0.2)',
-    },
-  ];
-
   return (
     <>
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&display=swap');
-
-        * { box-sizing: border-box; }
-
-        .dash-root {
-          min-height: 100vh;
-          background: #0f0f14;
-          font-family: 'DM Sans', sans-serif;
-          color: #fff;
-        }
-
-        .dash-body {
-          padding: 2rem 1.5rem 4rem;
-          max-width: 1200px;
-          margin: 0 auto;
-        }
-
-        /* Page header */
-        .dash-header {
-          margin-bottom: 2rem;
-          animation: fadeUp 0.5s ease both;
-        }
-
-        .dash-header h1 {
-          font-family: 'Bebas Neue', sans-serif;
-          font-size: clamp(2rem, 5vw, 3rem);
-          letter-spacing: 2px;
-          color: #fff;
-          margin: 0 0 0.25rem;
-          line-height: 1;
-        }
-
-        .dash-header h1 span {
-          color: #FF6B35;
-          text-shadow: 0 0 30px rgba(255,107,53,0.5);
-        }
-
-        .dash-subtitle {
-          color: rgba(255,255,255,0.4);
-          font-size: 0.9rem;
-          margin: 0;
-        }
-
-        /* Stat cards */
-        .stat-grid {
-          display: grid;
-          grid-template-columns: repeat(4, 1fr);
-          gap: 1rem;
-          margin-bottom: 1.75rem;
-        }
-
-        .stat-card {
-          background: #1a1a24;
-          border-radius: 14px;
-          padding: 1.25rem;
-          border: 1px solid rgba(255,255,255,0.05);
-          position: relative;
-          overflow: hidden;
-          transition: transform 0.2s, box-shadow 0.2s;
-          animation: cardIn 0.5s ease both;
-        }
-
-        .stat-card:hover {
-          transform: translateY(-3px);
-        }
-
-        .stat-card::before {
-          content: '';
-          position: absolute;
-          top: 0; left: 0; right: 0;
-          height: 2px;
-          background: var(--card-color);
-          opacity: 0.8;
-        }
-
-        .stat-card-top {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          margin-bottom: 0.75rem;
-        }
-
-        .stat-label {
-          font-size: 0.75rem;
-          font-weight: 600;
-          text-transform: uppercase;
-          letter-spacing: 0.5px;
-          color: rgba(255,255,255,0.4);
-        }
-
-        .stat-icon {
-          font-size: 1.2rem;
-          opacity: 0.85;
-        }
-
-        .stat-value {
-          font-family: 'Bebas Neue', sans-serif;
-          font-size: 2.4rem;
-          letter-spacing: 1px;
-          color: var(--card-color);
-          line-height: 1;
-          text-shadow: 0 0 20px var(--card-glow);
-        }
-
-        .stat-unit {
-          font-size: 0.75rem;
-          color: rgba(255,255,255,0.3);
-          margin-top: 0.25rem;
-          font-weight: 500;
-        }
-
-        /* Chart panels */
-        .chart-grid {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 1rem;
-          margin-bottom: 1.75rem;
-        }
-
-        .panel {
-          background: #1a1a24;
-          border-radius: 14px;
-          padding: 1.5rem;
-          border: 1px solid rgba(255,255,255,0.05);
-          animation: cardIn 0.5s ease both;
-        }
-
-        .panel-title {
-          font-family: 'Bebas Neue', sans-serif;
-          font-size: 1.1rem;
-          letter-spacing: 1.5px;
-          color: rgba(255,255,255,0.8);
-          margin: 0 0 1.25rem;
-          display: flex;
-          align-items: center;
-          gap: 0.5rem;
-        }
-
-        .panel-title span {
-          font-family: 'DM Sans', sans-serif;
-          font-size: 0.7rem;
-          font-weight: 600;
-          text-transform: uppercase;
-          letter-spacing: 1px;
-          color: rgba(255,255,255,0.3);
-          margin-left: auto;
-        }
-
-        /* Goals section */
-        .goals-panel {
-          background: #1a1a24;
-          border-radius: 14px;
-          padding: 1.5rem;
-          border: 1px solid rgba(255,255,255,0.05);
-          margin-bottom: 1.75rem;
-          animation: cardIn 0.5s ease both;
-        }
-
-        .goal-item {
-          margin-bottom: 1.25rem;
-        }
-
-        .goal-item:last-child { margin-bottom: 0; }
-
-        .goal-row {
-          display: flex;
-          justify-content: space-between;
-          align-items: baseline;
-          margin-bottom: 0.4rem;
-        }
-
-        .goal-name {
-          font-size: 0.9rem;
-          font-weight: 600;
-          color: rgba(255,255,255,0.85);
-        }
-
-        .goal-numbers {
-          font-size: 0.8rem;
-          color: rgba(255,255,255,0.35);
-          font-weight: 500;
-        }
-
-        .goal-track {
-          background: rgba(255,255,255,0.06);
-          border-radius: 999px;
-          height: 7px;
-          overflow: hidden;
-        }
-
-        .goal-fill {
-          height: 100%;
-          border-radius: 999px;
-          transition: width 0.6s cubic-bezier(0.25, 1, 0.5, 1);
-          position: relative;
-        }
-
-        .goal-fill::after {
-          content: '';
-          position: absolute;
-          top: 0; right: 0;
-          width: 6px; height: 100%;
-          background: rgba(255,255,255,0.5);
-          border-radius: 999px;
-        }
-
-        .goal-meta {
-          font-size: 0.72rem;
-          color: rgba(255,255,255,0.25);
-          margin-top: 0.35rem;
-        }
-
-        .empty-state {
-          text-align: center;
-          padding: 2rem 0;
-        }
-
-        .empty-state p {
-          color: rgba(255,255,255,0.3);
-          margin: 0 0 0.75rem;
-          font-size: 0.9rem;
-        }
-
-        .empty-link {
-          display: inline-block;
-          color: #FF6B35;
-          text-decoration: none;
-          font-weight: 600;
-          font-size: 0.85rem;
-          border: 1px solid rgba(255,107,53,0.35);
-          padding: 0.45rem 1rem;
-          border-radius: 8px;
-          transition: all 0.2s;
-        }
-
-        .empty-link:hover {
-          background: rgba(255,107,53,0.1);
-        }
-
-        /* Sessions table */
-        .sessions-panel {
-          background: #1a1a24;
-          border-radius: 14px;
-          padding: 1.5rem;
-          border: 1px solid rgba(255,255,255,0.05);
-          animation: cardIn 0.5s ease both;
-        }
-
-        .sessions-table {
-          width: 100%;
-          border-collapse: collapse;
-        }
-
-        .sessions-table th {
-          text-align: left;
-          padding: 0 0.75rem 0.75rem;
-          font-size: 0.7rem;
-          font-weight: 700;
-          text-transform: uppercase;
-          letter-spacing: 1px;
-          color: rgba(255,255,255,0.25);
-          border-bottom: 1px solid rgba(255,255,255,0.06);
-        }
-
-        .sessions-table td {
-          padding: 0.85rem 0.75rem;
-          font-size: 0.875rem;
-          border-bottom: 1px solid rgba(255,255,255,0.04);
-          color: rgba(255,255,255,0.7);
-          vertical-align: middle;
-        }
-
-        .sessions-table tr:last-child td {
-          border-bottom: none;
-        }
-
-        .sessions-table tr:hover td {
-          background: rgba(255,255,255,0.02);
-        }
-
-        .workout-badge {
-          background: rgba(255,107,53,0.12);
-          color: #FF6B35;
-          border: 1px solid rgba(255,107,53,0.25);
-          padding: 0.2rem 0.65rem;
-          border-radius: 999px;
-          font-size: 0.75rem;
-          font-weight: 600;
-          white-space: nowrap;
-        }
-
-        .date-cell {
-          color: rgba(255,255,255,0.4);
-          font-size: 0.82rem;
-          white-space: nowrap;
-        }
-
-        .duration-cell {
-          color: #00B4D8;
-          font-weight: 600;
-        }
-
-        .cal-cell {
-          color: #FF6B35;
-          font-weight: 600;
-        }
-
-        .notes-cell {
-          color: rgba(255,255,255,0.3);
-          font-size: 0.82rem;
-          font-style: italic;
-          max-width: 160px;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-        }
-
-        /* Animations */
-        @keyframes cardIn {
-          from { opacity: 0; transform: translateY(16px); }
-          to   { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes fadeUp {
-          from { opacity: 0; transform: translateY(10px); }
-          to   { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Stagger */
-        .stat-card:nth-child(1) { animation-delay: 0.05s; }
-        .stat-card:nth-child(2) { animation-delay: 0.1s; }
-        .stat-card:nth-child(3) { animation-delay: 0.15s; }
-        .stat-card:nth-child(4) { animation-delay: 0.2s; }
-
-        .chart-grid .panel:nth-child(1) { animation-delay: 0.25s; }
-        .chart-grid .panel:nth-child(2) { animation-delay: 0.3s; }
-        .goals-panel { animation-delay: 0.35s; }
-        .sessions-panel { animation-delay: 0.4s; }
-
-        /* Responsive */
-        @media (max-width: 900px) {
-          .stat-grid { grid-template-columns: repeat(2, 1fr); }
-          .chart-grid { grid-template-columns: 1fr; }
-        }
-
-        @media (max-width: 480px) {
-          .stat-grid { grid-template-columns: repeat(2, 1fr); }
-          .sessions-table th:nth-child(4),
-          .sessions-table td:nth-child(4),
-          .sessions-table th:nth-child(5),
-          .sessions-table td:nth-child(5) { display: none; }
-        }
-      `}</style>
-
+      <style>{css}</style>
       <div className="dash-root">
         <Navbar />
         <div className="dash-body">
 
           {/* Header */}
           <div className="dash-header">
-            <h1>YOUR <span>DASHBOARD</span></h1>
+            <h1>Dashboard</h1>
             <p className="dash-subtitle">
               {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })} · Weekly overview
             </p>
@@ -493,15 +364,9 @@ const Dashboard = () => {
           {/* Stat Cards */}
           <div className="stat-grid">
             {statCards.map((card) => (
-              <div
-                key={card.title}
-                className="stat-card"
-                style={{ '--card-color': card.color, '--card-glow': card.glow }}
-              >
-                <div className="stat-card-top">
-                  <div className="stat-label">{card.title}</div>
-                  <div className="stat-icon">{card.icon}</div>
-                </div>
+              <div key={card.title} className="stat-card">
+                <div className="stat-accent" />
+                <div className="stat-label">{card.title}</div>
                 <div className="stat-value">{card.value.toLocaleString()}</div>
                 <div className="stat-unit">{card.unit}</div>
               </div>
@@ -511,119 +376,76 @@ const Dashboard = () => {
           {/* Charts */}
           <div className="chart-grid">
             <div className="panel">
-              <div className="panel-title">
-                ⏱ Session Duration
-                <span>Last 7 sessions</span>
+              <div className="panel-header">
+                <span className="panel-title">Session duration</span>
+                <span className="panel-meta">Last 7 sessions</span>
               </div>
               {chartData.length === 0 ? (
-                <div style={{ height: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'rgba(255,255,255,0.2)', fontSize: '0.85rem' }}>
-                  No session data yet
+                <div style={{ height: 180, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'rgba(255,255,255,0.15)', fontSize: '0.8rem' }}>
+                  No data yet
                 </div>
               ) : (
-                <ResponsiveContainer width="100%" height={200}>
+                <ResponsiveContainer width="100%" height={180}>
                   <LineChart data={chartData}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" />
-                    <XAxis
-                      dataKey="date"
-                      tick={{ fontSize: 11, fill: 'rgba(255,255,255,0.3)', fontFamily: 'DM Sans' }}
-                      axisLine={false}
-                      tickLine={false}
-                    />
-                    <YAxis
-                      tick={{ fontSize: 11, fill: 'rgba(255,255,255,0.3)', fontFamily: 'DM Sans' }}
-                      axisLine={false}
-                      tickLine={false}
-                    />
+                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.03)" />
+                    <XAxis dataKey="date" tick={{ fontSize: 10, fill: 'rgba(255,255,255,0.25)', fontFamily: 'Inter' }} axisLine={false} tickLine={false} />
+                    <YAxis tick={{ fontSize: 10, fill: 'rgba(255,255,255,0.25)', fontFamily: 'Inter' }} axisLine={false} tickLine={false} />
                     <Tooltip content={<CustomTooltip />} />
-                    <Line
-                      type="monotone"
-                      dataKey="duration"
-                      stroke="#00B4D8"
-                      strokeWidth={2.5}
-                      dot={{ r: 4, fill: '#00B4D8', strokeWidth: 0 }}
-                      activeDot={{ r: 6, fill: '#00B4D8', boxShadow: '0 0 10px #00B4D8' }}
-                    />
+                    <Line type="monotone" dataKey="duration" stroke="#818cf8" strokeWidth={2} dot={{ r: 3, fill: '#818cf8', strokeWidth: 0 }} activeDot={{ r: 5, fill: '#818cf8' }} />
                   </LineChart>
                 </ResponsiveContainer>
               )}
             </div>
 
             <div className="panel">
-              <div className="panel-title">
-                🔥 Calories Burned
-                <span>Last 7 sessions</span>
+              <div className="panel-header">
+                <span className="panel-title">Calories burned</span>
+                <span className="panel-meta">Last 7 sessions</span>
               </div>
               {chartData.length === 0 ? (
-                <div style={{ height: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'rgba(255,255,255,0.2)', fontSize: '0.85rem' }}>
-                  No session data yet
+                <div style={{ height: 180, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'rgba(255,255,255,0.15)', fontSize: '0.8rem' }}>
+                  No data yet
                 </div>
               ) : (
-                <ResponsiveContainer width="100%" height={200}>
+                <ResponsiveContainer width="100%" height={180}>
                   <BarChart data={chartData}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" />
-                    <XAxis
-                      dataKey="date"
-                      tick={{ fontSize: 11, fill: 'rgba(255,255,255,0.3)', fontFamily: 'DM Sans' }}
-                      axisLine={false}
-                      tickLine={false}
-                    />
-                    <YAxis
-                      tick={{ fontSize: 11, fill: 'rgba(255,255,255,0.3)', fontFamily: 'DM Sans' }}
-                      axisLine={false}
-                      tickLine={false}
-                    />
+                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.03)" />
+                    <XAxis dataKey="date" tick={{ fontSize: 10, fill: 'rgba(255,255,255,0.25)', fontFamily: 'Inter' }} axisLine={false} tickLine={false} />
+                    <YAxis tick={{ fontSize: 10, fill: 'rgba(255,255,255,0.25)', fontFamily: 'Inter' }} axisLine={false} tickLine={false} />
                     <Tooltip content={<CustomTooltip />} />
-                    <Bar
-                      dataKey="calories"
-                      fill="#FF6B35"
-                      radius={[4, 4, 0, 0]}
-                      maxBarSize={36}
-                    />
+                    <Bar dataKey="calories" fill="#818cf8" radius={[3, 3, 0, 0]} maxBarSize={32} opacity={0.8} />
                   </BarChart>
                 </ResponsiveContainer>
               )}
             </div>
           </div>
 
-          {/* Goals Progress */}
-          <div className="goals-panel">
-            <div className="panel-title">
-              🎯 Goals Progress
-              <span>{goals.filter(g => g.status === 'active').length} active</span>
+          {/* Goals */}
+          <div className="panel goals-panel">
+            <div className="panel-header">
+              <span className="panel-title">Goals</span>
+              <span className="panel-meta">{activeGoals} active</span>
             </div>
             {goals.length === 0 ? (
               <div className="empty-state">
-                <p>No goals set yet. Start tracking your progress!</p>
-                <a href="/goals" className="empty-link">+ Add First Goal</a>
+                <p>No goals set yet.</p>
+                <a href="/goals" className="empty-link">+ Add a goal</a>
               </div>
             ) : (
               goals.map(goal => {
                 const progress = Math.min((goal.currentValue / goal.targetValue) * 100, 100);
                 const isComplete = progress >= 100;
-                const fillColor = isComplete ? '#2ECC71' : progress > 60 ? '#FFB627' : '#FF6B35';
                 return (
                   <div key={goal._id} className="goal-item">
                     <div className="goal-row">
-                      <span className="goal-name">
-                        {isComplete && '✅ '}
-                        {goal.title}
-                      </span>
-                      <span className="goal-numbers">
-                        {goal.currentValue} / {goal.targetValue} {goal.unit}
-                      </span>
+                      <span className="goal-name">{goal.title}</span>
+                      <span className="goal-numbers">{goal.currentValue} / {goal.targetValue} {goal.unit}</span>
                     </div>
                     <div className="goal-track">
-                      <div
-                        className="goal-fill"
-                        style={{
-                          width: `${progress}%`,
-                          background: `linear-gradient(90deg, ${fillColor}99, ${fillColor})`,
-                          boxShadow: `0 0 8px ${fillColor}60`
-                        }}
-                      />
+                      <div className={`goal-fill ${isComplete ? 'complete' : ''}`} style={{ width: `${progress}%` }} />
                     </div>
                     <div className="goal-meta">
-                      {Math.round(progress)}% complete · Due {new Date(goal.deadline).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                      {Math.round(progress)}% · Due {new Date(goal.deadline).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                     </div>
                   </div>
                 );
@@ -631,16 +453,16 @@ const Dashboard = () => {
             )}
           </div>
 
-          {/* Recent Sessions */}
-          <div className="sessions-panel">
-            <div className="panel-title">
-              🏃 Recent Sessions
-              <span>{sessions.length} total</span>
+          {/* Sessions table */}
+          <div className="panel sessions-panel">
+            <div className="panel-header">
+              <span className="panel-title">Recent sessions</span>
+              <span className="panel-meta">{sessions.length} total</span>
             </div>
             {sessions.length === 0 ? (
               <div className="empty-state">
-                <p>No sessions logged yet. Time to get moving!</p>
-                <a href="/log-session" className="empty-link">+ Log First Session</a>
+                <p>No sessions logged yet.</p>
+                <a href="/log-session" className="empty-link">+ Log a session</a>
               </div>
             ) : (
               <table className="sessions-table">
@@ -660,11 +482,9 @@ const Dashboard = () => {
                         {new Date(s.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                       </td>
                       <td>
-                        <span className="workout-badge">
-                          {s.workoutType?.name || 'Unknown'}
-                        </span>
+                        <span className="workout-badge">{s.workoutType?.name || 'Unknown'}</span>
                       </td>
-                      <td className="duration-cell">{s.duration} mins</td>
+                      <td className="duration-cell">{s.duration} min</td>
                       <td className="cal-cell">{s.metrics.caloriesBurned} kcal</td>
                       <td className="notes-cell">{s.notes || '—'}</td>
                     </tr>
