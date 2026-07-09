@@ -10,14 +10,15 @@ const AuthCallback = () => {
     const params = new URLSearchParams(window.location.search);
     const token = params.get('token');
     if (token) {
-      handleGoogleCallback(token).then(role => {
-        // ✅ new user with no role → pick role first
-        if (!role) {
-          navigate('/select-role');
-        } else {
-          navigate('/dashboard');
-        }
-      });
+      handleGoogleCallback(token)
+        .then(role => {
+          if (!role) {
+            navigate('/select-role');
+          } else {
+            navigate('/dashboard');
+          }
+        })
+        .catch(() => navigate('/login'));
     } else {
       navigate('/login');
     }
